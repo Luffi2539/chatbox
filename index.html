@@ -39,24 +39,12 @@
             color: #fff;
             font-weight: bold;
             border-bottom: 2px solid #4a4a4a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .open-window-btn {
-            background: #5865F2;
-            color: #fff;
+        .chat-frame {
+            width: 100%;
+            height: calc(100% - 45px);
             border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background 0.2s;
-        }
-
-        .open-window-btn:hover {
-            background: #4752C4;
         }
 
         .placeholder {
@@ -68,12 +56,15 @@
             font-size: 14px;
             padding: 20px;
             text-align: center;
+            line-height: 1.6;
         }
 
-        .chat-frame {
-            width: 100%;
-            height: calc(100% - 45px);
-            border: none;
+        .placeholder code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #4a9eff;
         }
 
         /* Настройки для маленьких экранов */
@@ -94,24 +85,11 @@
             <div class="chat-header">
                 <span>TikFinity Chat</span>
             </div>
-            <iframe 
-                class="chat-frame" 
-                src="https://tikfinity.zerody.one/widget/chat?cid=2700570"
-                allowtransparency="true">
-            </iframe>
-        </div>
-
-        <div class="chat-box">
-            <div class="chat-header">
-                <span>Streamlabs Chat</span>
-                <button class="open-window-btn" onclick="openStreamlabsWindow()">Открыть в окне</button>
-            </div>
-            <div class="placeholder" id="streamlabs-placeholder">
+            <div id="chat-container" class="placeholder">
                 <div>
-                    <p>Streamlabs виджет требует авторизации.</p>
-                    <p>Нажмите "Открыть в окне" выше, чтобы открыть в отдельном окне браузера.</p>
-                    <p style="margin-top: 10px; font-size: 12px; color: #666;">
-                        Или используйте расширение браузера для отключения iframe restrictions.
+                    <p>Загрузка чата...</p>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                        Используйте параметр: <code>?cid=YOUR_ID</code>
                     </p>
                 </div>
             </div>
@@ -119,47 +97,37 @@
     </div>
 
     <script>
-        let streamlabsWindow = null;
+        // Получаем cid из URL параметров
+        const urlParams = new URLSearchParams(window.location.search);
+        const cid = urlParams.get('cid');
 
-        function openStreamlabsWindow() {
-            const url = 'https://streamlabs.com/widgets/chat-box/v1/7B303A223C193E4DD237';
-            const width = 400;
-            const height = 600;
-            const left = window.screen.width - width - 50;
-            const top = 50;
-            
-            const features = `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`;
-            
-            if (streamlabsWindow && !streamlabsWindow.closed) {
-                streamlabsWindow.focus();
-            } else {
-                streamlabsWindow = window.open(url, 'StreamlabsChat', features);
-            }
+        const container = document.getElementById('chat-container');
+
+        if (cid) {
+            // Если cid предоставлен, создаем iframe
+            container.innerHTML = '';
+            const iframe = document.createElement('iframe');
+            iframe.className = 'chat-frame';
+            iframe.src = `https://tikfinity.zerody.one/widget/chat?cid=${encodeURIComponent(cid)}`;
+            iframe.setAttribute('allowtransparency', 'true');
+            container.appendChild(iframe);
+        } else {
+            // Если cid не предоставлен, показываем инструкцию
+            container.innerHTML = `
+                <div>
+                    <p><strong>Пожалуйста, передайте ID чата в URL</strong></p>
+                    <p style="margin-top: 15px; font-size: 14px;">Пример:</p>
+                    <p style="margin: 10px 0; font-size: 13px;">
+                        <code style="background: #1a1a1a; padding: 8px 12px; border-radius: 4px; display: inline-block;">
+                            ${window.location.href}?cid=2700570
+                        </code>
+                    </p>
+                    <p style="font-size: 12px; color: #666; margin-top: 15px;">
+                        Замените <code>2700570</code> на ваш ID чата
+                    </p>
+                </div>
+            `;
         }
-
-        // Попробуем загрузить iframe (может сработать, если пользователь залогинен)
-        const iframe = document.createElement('iframe');
-        iframe.className = 'chat-frame';
-        iframe.src = 'https://streamlabs.com/widgets/chat-box/v1/7B303A223C193E4DD237';
-        iframe.setAttribute('allowtransparency', 'true');
-        iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
-        iframe.style.display = 'none';
-        
-        iframe.onload = function() {
-            // Если iframe загрузился успешно, показываем его
-            setTimeout(() => {
-                try {
-                    // Проверяем, доступен ли контент (не выдаст ошибку только если та же origin)
-                    const placeholder = document.getElementById('streamlabs-placeholder');
-                    placeholder.style.display = 'none';
-                    iframe.style.display = 'block';
-                } catch (e) {
-                    // Cross-origin, оставляем placeholder
-                }
-            }, 1000);
-        };
-        
-        document.getElementById('streamlabs-placeholder').parentElement.appendChild(iframe);
     </script>
 </body>
 </html>
