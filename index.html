@@ -39,6 +39,24 @@
             color: #fff;
             font-weight: bold;
             border-bottom: 2px solid #4a4a4a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .open-btn {
+            background: #5a5a5a;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .open-btn:hover {
+            background: #6a6a6a;
         }
 
         .chat-frame {
@@ -62,7 +80,10 @@
 <body>
     <div class="container">
         <div class="chat-box">
-            <div class="chat-header">TikFinity Chat</div>
+            <div class="chat-header">
+                <span>TikFinity Chat</span>
+                <button class="open-btn" onclick="window.open('https://tikfinity.zerody.one/widget/chat?cid=2700570', 'tikfinity', 'width=400,height=600')">Открыть отдельно</button>
+            </div>
             <iframe 
                 class="chat-frame" 
                 src="https://tikfinity.zerody.one/widget/chat?cid=2700570"
@@ -71,12 +92,16 @@
         </div>
 
         <div class="chat-box">
-            <div class="chat-header">Streamlabs Chat</div>
+            <div class="chat-header">
+                <span>Streamlabs Chat</span>
+                <button class="open-btn" onclick="window.open('https://streamlabs.com/widgets/chat-box/v1/7B303A223C193E4DD237', 'streamlabs', 'width=400,height=600')">Открыть отдельно</button>
+            </div>
             <iframe 
                 class="chat-frame" 
                 src="https://streamlabs.com/widgets/chat-box/v1/7B303A223C193E4DD237"
                 allowtransparency="true"
-                sandbox="allow-same-origin allow-scripts allow-popups allow-forms">
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                allow="storage-access *">
             </iframe>
         </div>
     </div>
